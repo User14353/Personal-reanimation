@@ -2539,8 +2539,8 @@ local function C_c()
 		local RealisticFedora=getPartJoint(hat)
 	
 		local ModeV=""
-		t.setJumpPower(80)
-		t.setWalkSpeed(40)
+		t.setJumpPower(60)
+		t.setWalkSpeed(16)
 	
 		addmode("default",{
 			ModeV="Purity",
@@ -2602,7 +2602,7 @@ local function C_c()
 			local function handleModeExecution(mode)
 					if mode == "Purity" then
 							t.setJumpPower(60)
-							t.setWalkSpeed(20)
+							t.setWalkSpeed(16)
 					end
 			end
 
