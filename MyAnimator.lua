@@ -2580,7 +2580,7 @@ local function C_c()
 			end,
 			jump=function()
 				Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1-0.08*sin(sine*2),0),angles(-1.2042771838760873-0.03490658503988659*sin(sine*2),0.05235987755982989*sin(sine*2),3.141592653589793)),deltaTime) 
-				RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10+0.2*sin((sine-0.1)*3.2),0),angles(-1.3962634015954636+0.03490658503988659*sin(sine*2),0,3.141592653589793)),deltaTime) 
+				RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0,0),angles(-1.3962634015954636+0.03490658503988659*sin(sine*2),0,3.141592653589793)),deltaTime) 
 				LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.4-0.1*sin(sine*2.6),0),angles(0.05235987755982989*sin(sine*2),-1.3962634015954636+0.05235987755982989*sin(sine*2),0)),deltaTime) 
 				LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1,0),angles(-0.3490658503988659+0.05235987755982989*sin(sine*2),-1.3962634015954636-0.06981317007977318*sin(sine*2),0)),deltaTime) 
 				RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-0.6,-1),angles(-0.4537856055185257-0.05235987755982989*sin(sine*2),1.3962634015954636-0.06981317007977318*sin(sine*2),0)),deltaTime) 
