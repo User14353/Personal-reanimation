@@ -2382,7 +2382,7 @@ LMG2L["TextLabel_4"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSS
 LMG2L["TextLabel_4"]["TextColor3"] = Color3.fromRGB(54, 17, 0);
 LMG2L["TextLabel_4"]["BackgroundTransparency"] = 0.699;
 LMG2L["TextLabel_4"]["Size"] = UDim2.new(0, 450, 0, 54);
-LMG2L["TextLabel_4"]["Text"] = [[Star Glitcher - Exire]];
+LMG2L["TextLabel_4"]["Text"] = [[Personal Reanimate]];
 
 -- Players.cillfall.PlayerGui.ScreenGui.Frame.TextLabel.UICorner
 LMG2L["UICorner_5"] = Instance.new("UICorner", LMG2L["TextLabel_4"]);
@@ -2398,7 +2398,7 @@ LMG2L["TextLabel2_6"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamS
 LMG2L["TextLabel2_6"]["TextColor3"] = Color3.fromRGB(54, 17, 0);
 LMG2L["TextLabel2_6"]["BackgroundTransparency"] = 0.699;
 LMG2L["TextLabel2_6"]["Size"] = UDim2.new(0, 204, 0, 82);
-LMG2L["TextLabel2_6"]["Text"] = [[ press mode key again to enter Mode 1, also please send any bugs to the discord which is in your clipboard - Exire]];
+LMG2L["TextLabel2_6"]["Text"] = [[ my personal reanimation script - Exire]];
 LMG2L["TextLabel2_6"]["Name"] = [[TextLabel2]];
 LMG2L["TextLabel2_6"]["Position"] = UDim2.new(0, 14, 0, 76);
 
@@ -2558,31 +2558,24 @@ local function C_c()
 			end,
 			walk=function()
 				local fw,rt=velbycfrvec()
-				Demon.C0=Lerp(Demon.C0,cfMul(cf(-1,4,0),angles(628318530717958700000*sin(sine*1e-20),1.5707963267948966,3.141592653589793)),deltaTime) 
-				Rainbow.C0=Lerp(Rainbow.C0,cfMul(cf(6,8,10),angles(6283185307.179586*sin(sine*1e-09),-1.5707963267948966,0)),deltaTime) 
-	
-				Aurora.C0=Lerp(Aurora.C0,cfMul(cf(-6,-8,-10),angles(-6283185307.179586*sin(sine*1e-09),1.5707963267948966,1.5707963267948966)),deltaTime) 
-				Halloween.C0=Lerp(Halloween.C0,cfMul(cf(-1,4,0),angles(628318530717958700000*sin(sine*1e-20),1.5707963267948966,0)),deltaTime) 
-				RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-0.3-0.1*sin(sine*1),-1),angles(-0.3490658503988659+0.05235987755982989*sin(sine*1),1.3962634015954636+0.05235987755982989*sin(sine*1),0)),deltaTime) 
-				RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10+0.2*sin(sine*1),0),angles(-2.600540585471551-0.05235987755982989*sin(sine*1),0,3.141592653589793)),deltaTime) 
-				LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.5-0.1*sin(sine*1),0),angles(-0.24434609527920614+0.05235987755982989*sin(sine*1),-1.3962634015954636+0.05235987755982989*sin(sine*1),0)),deltaTime) 
-				LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1-0.1*sin(sine*1),0),angles(-0.3490658503988659-0.05235987755982989*sin(sine*1),-1.5707963267948966,0)),deltaTime) 
-				RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,0.5-0.1*sin(sine*1),0),angles(-0.24434609527920614+0.05235987755982989*sin(sine*1),1.3962634015954636+0.05235987755982989*sin(sine*1),0)),deltaTime) 
-				Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-0.6981317007977318+0.05235987755982989*sin(sine*1),0,3.141592653589793)),deltaTime) 
+						
+				RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.05+0.05*sin(sine*4),0),angles(-1.472550912518142+0.1*sin(sine*2+0.1),0,-3.141592502593994)),deltaTime)
+				Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.770375300881913-0.1*sin(sine*2),0,-3.141592502593994)),deltaTime)
+				LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1+0.1*sin(sine*4),-0.15+0.3*sin(sine*4+0.15)),angles(-0.3117479552081974-0.3*sin(sine*4),-1.372078534904588,0)),deltaTime)
+				LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-0.7251110411526867,0.5398506030701755,0),angles(0.9116319990672048,-1.011673785582404,1.374517429797608)),deltaTime)
+				RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-1-0.1*sin(sine*4),-0.15-0.3*sin(sine*4+0.15)),angles(-0.1486985806291861+0.3*sin(sine*4),1.476998111205829,0)),deltaTime)
+				RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(0.6983278508771926,0.4870257461280154,0.09154470343338872),angles(0.3482775547162031,0.8452503260686353,-0.7784380619717126)),deltaTime)
+				RealisticFedora.C0=Lerp(RealisticFedora.C0,cfMul(cf(0,-0.006111546566611281,0.0909745065789469),angles(0.1753212208820969,0.6346206351215216,-0)),deltaTime)
 				--MW_animatorProgressSave: RightLeg,1,0,0,1,-20,3,0,1,-0.3,-0.1,0,1,80,3,0,1,-1,0,0,1,0,0,0,1,Torso,0,0,0,1,-149,-3,0,1,3,0.2,0,1,0,0,0,1,0,0,0,1,180,0,0,1,LeftArm,-1,0,0,1,-14,3,0,1,0.5,-0.1,0,1,-80,3,0,1,0,0,0,1,0,0,0,1,LeftLeg,-1,0,0,1,-20,-3,0,1,-1,-0.1,0,1,-90,0,0,1,0,0,0,1,0,0,0,1,RightArm,1,0,0,1,-14,3,0,1,0.5,-0.1,0,1,80,3,0,1,0,0,0,1,0,0,0,1,Head,0,0,0,1,-40,3,0,1,1,-0,0,1,0,0,0,1,0,0,0,1,180,0,0,1
 			end,
 			fall=function()
-				Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1-0.08*sin(sine*2),0),angles(-1.2042771838760873-0.03490658503988659*sin(sine*2),0.05235987755982989*sin(sine*2),3.141592653589793)),deltaTime) 
-				RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,10+0.2*sin((sine-0.1)*3.2),0),angles(-1.3962634015954636+0.03490658503988659*sin(sine*2),0,3.141592653589793)),deltaTime) 
-				LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-1,0.4-0.1*sin(sine*2.6),0),angles(0.05235987755982989*sin(sine*2),-1.3962634015954636+0.05235987755982989*sin(sine*2),0)),deltaTime) 
-				LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1,0),angles(-0.3490658503988659+0.05235987755982989*sin(sine*2),-1.3962634015954636-0.06981317007977318*sin(sine*2),0)),deltaTime) 
-				RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-0.6,-1),angles(-0.4537856055185257-0.05235987755982989*sin(sine*2),1.3962634015954636-0.06981317007977318*sin(sine*2),0)),deltaTime) 
-				RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,1-0.1*sin(sine*2),0),angles(2.792526803190927+0.05235987755982989*sin(sine*2),1.7453292519943295+0.05235987755982989*sin(sine*2),0)),deltaTime) 
-				Demon.C0=Lerp(Demon.C0,cfMul(cf(-1,4,0),angles(628318530717958700000*sin(sine*1e-20),1.5707963267948966,3.141592653589793)),deltaTime) 
-				Rainbow.C0=Lerp(Rainbow.C0,cfMul(cf(6,8,10),angles(6283185307.179586*sin(sine*1e-09),-1.5707963267948966,0)),deltaTime) 
-	
-				Aurora.C0=Lerp(Aurora.C0,cfMul(cf(-6,-8,-10),angles(-6283185307.179586*sin(sine*1e-09),1.5707963267948966,1.5707963267948966)),deltaTime) 
-				Halloween.C0=Lerp(Halloween.C0,cfMul(cf(-1,4,0),angles(628318530717958700000*sin(sine*1e-20),1.5707963267948966,0)),deltaTime) 
+				RootJoint.C0=Lerp(RootJoint.C0,cfMul(cf(0,0.05+0.05*sin(sine*4),0),angles(-1.472550912518142+0.1*sin(sine*2+0.1),0,-3.141592502593994)),deltaTime)
+				Neck.C0=Lerp(Neck.C0,cfMul(cf(0,1,0),angles(-1.770375300881913-0.1*sin(sine*2),0,-3.141592502593994)),deltaTime)
+				LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1.253370318496436,-0.4881099232456148,-0.3296326754385968),angles(-0.08231354363766208,-1.209029160325577,0.380571887092743)),deltaTime)
+				LeftShoulder.C0=Lerp(LeftShoulder.C0,cfMul(cf(-0.7251110411526867,0.5398506030701755,0),angles(-0.6133770196050801,-0.8125254025937414,-0.6133770196050801)),deltaTime)
+				RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1.093806216591283,-0.2239802845737398,-0.4352850663034538),angles(-0.414228636616417,1.143074714432407,-0.1164042482526462)),deltaTime)
+				RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(0.6983278508771926,0.4870257461280154,0.09154470343338872),angles(4.655981546500334,1.143074714432407,1.474989807411162)),deltaTime)
+				RealisticFedora.C0=Lerp(RealisticFedora.C0,cfMul(cf(0.01302083333333393,0.01302083333333393,0.006256103515625),angles(0.1150384671125559,0.7124836160785417,-0)),deltaTime)
 				--MW_animatorProgressSave: Head,0,0,0,2,-69,-2,0,2,1,-0.08,0,2,0,3,0,2,0,0,0,2,180,0,0,2,Torso,0,0,0,2,-80,2,0,2,2,0.2,-0.1,3.2,0,0,0,2,0,0,0,2,180,0,0,2,LeftArm,-1,0,0,2,0,3,0,2,0.4,-0.1,0,2.6,-80,3,0,2,0,0,0,2,0,0,0,2,LeftLeg,-1,0,0,2,-20,3,0,2,-1,0,0,2,-80,-4,0,2,0,0,0,2,0,0,0,2,RightLeg,1,0,0,2,-26,-3,0,2,-0.6,0,0,2,80,-4,0,2,-1,0,0,2,0,0,0,2,RightArm,1,0,0,2,160,3,0,2,1,-0.1,0,2,100,3,0,2,0,0,0,2,0,0,0,2
 			end,
 			jump=function()
@@ -2592,67 +2585,10 @@ local function C_c()
 				LeftHip.C0=Lerp(LeftHip.C0,cfMul(cf(-1,-1,0),angles(-0.3490658503988659+0.05235987755982989*sin(sine*2),-1.3962634015954636-0.06981317007977318*sin(sine*2),0)),deltaTime) 
 				RightHip.C0=Lerp(RightHip.C0,cfMul(cf(1,-0.6,-1),angles(-0.4537856055185257-0.05235987755982989*sin(sine*2),1.3962634015954636-0.06981317007977318*sin(sine*2),0)),deltaTime) 
 				RightShoulder.C0=Lerp(RightShoulder.C0,cfMul(cf(1,1-0.1*sin(sine*2),0),angles(2.792526803190927+0.05235987755982989*sin(sine*2),1.7453292519943295+0.05235987755982989*sin(sine*2),0)),deltaTime) 
-				Demon.C0=Lerp(Demon.C0,cfMul(cf(-1,4,0),angles(628318530717958700000*sin(sine*1e-20),1.5707963267948966,3.141592653589793)),deltaTime) 
-				Rainbow.C0=Lerp(Rainbow.C0,cfMul(cf(6,8,10),angles(6283185307.179586*sin(sine*1e-09),-1.5707963267948966,0)),deltaTime) 
-	
-				Aurora.C0=Lerp(Aurora.C0,cfMul(cf(-6,-8,-10),angles(-6283185307.179586*sin(sine*1e-09),1.5707963267948966,1.5707963267948966)),deltaTime) 
-				Halloween.C0=Lerp(Halloween.C0,cfMul(cf(-1,4,0),angles(628318530717958700000*sin(sine*1e-20),1.5707963267948966,0)),deltaTime) 
+
 				--MW_animatorProgressSave: Head,0,0,0,2,-69,-2,0,2,1,-0.08,0,2,0,3,0,2,0,0,0,2,180,0,0,2,Torso,0,0,0,2,-80,2,0,2,2,0.2,-0.1,3.2,0,0,0,2,0,0,0,2,180,0,0,2,LeftArm,-1,0,0,2,0,3,0,2,0.4,-0.1,0,2.6,-80,3,0,2,0,0,0,2,0,0,0,2,LeftLeg,-1,0,0,2,-20,3,0,2,-1,0,0,2,-80,-4,0,2,0,0,0,2,0,0,0,2,RightLeg,1,0,0,2,-26,-3,0,2,-0.6,0,0,2,80,-4,0,2,-1,0,0,2,0,0,0,2,RightArm,1,0,0,2,160,3,0,2,1,-0.1,0,2,100,3,0,2,0,0,0,2,0,0,0,2
 			end
 		})
-			local PlayerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
-			
-			-- VANISH LOGIC: If HUD exists, destroy it and exit function
-			local existingHUD = PlayerGui:FindFirstChild("StarGlitcherHUD")
-			if existingHUD then
-				existingHUD:Destroy()
-				return -- Stop here so it doesn't just recreate it immediately
-			end
-
-			-- Otherwise, start of gui code
-			local RunService = game:GetService("RunService")
-			local UserInputService = game:GetService("UserInputService")
-
-			local sg = Instance.new("ScreenGui", PlayerGui)
-			sg.Name = "StarGlitcherHUD"
-			sg.IgnoreGuiInset, sg.ResetOnSpawn = true, false 
-
-			-- UI Elements (Responsive Scale)
-			local function createUI()
-				local mainFrame = Instance.new("Frame", sg)
-				mainFrame.Size, mainFrame.Position = UDim2.new(0.2, 0, 0.08, 0), UDim2.new(0.4, 0, 0.85, 0)
-				mainFrame.BackgroundColor3, mainFrame.BackgroundTransparency, mainFrame.BorderSizePixel = Color3.fromRGB(10, 10, 10), 0.4, 2
-				
-				local modeL = Instance.new("TextLabel", mainFrame)
-				modeL.Size, modeL.BackgroundTransparency, modeL.Font, modeL.TextScaled = UDim2.new(1, 0, 1, 0), 1, Enum.Font.Arcade, true
-
-				local sigil = Instance.new("ImageLabel", sg)
-				sigil.Size, sigil.Position, sigil.BackgroundTransparency = UDim2.new(0.4, 0, 0.4, 0), UDim2.new(0.75, 0, 0.75, 0), 1
-				sigil.Image, sigil.ScaleType = "rbxassetid://85967406604142", Enum.ScaleType.Fit
-				local sigilG = Instance.new("UIGradient", sigil)
-
-				local scifiL = Instance.new("TextLabel", sg)
-				scifiL.Size, scifiL.Position, scifiL.BackgroundTransparency = UDim2.new(0.25, 0, 0.07, 0), UDim2.new(0.03, 0, 0.88, 0), 1
-				scifiL.Font, scifiL.TextScaled = Enum.Font.SciFi, true
-
-				return modeL, sigil, sigilG, scifiL, mainFrame
-			end
-
-			local modeLabel, sigil, sigilGradient, scifiLabel, mainHUDFrame = createUI()
-
-			-- Edge Glows
-			local function createEdge(name, size, pos, rot)
-				local f = Instance.new("Frame", sg); f.Name = name; f.Size = size; f.Position = pos; f.BackgroundTransparency = 0; f.BorderSizePixel = 0
-				local g = Instance.new("UIGradient", f); g.Rotation = rot
-				g.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.4), NumberSequenceKeypoint.new(1, 1)})
-				return g
-			end
-			sg.IgnoreGuiInset = true
-			sg.ScreenInsets = Enum.ScreenInsets.None
-			local bottomG = createEdge("BGlow", UDim2.new(1, 0, 0.25, 0), UDim2.new(0, 0, 0.75, 0), 270)
-			local leftG   = createEdge("LGlow", UDim2.new(0.18, 0, 1, 0), UDim2.new(0, 0, 0, 0), 0)
-			local rightG  = createEdge("RGlow", UDim2.new(0.18, 0, 1, 0), UDim2.new(0.82, 0, 0, 0), 180)
-
 			-- Setup Keybinds
 			local UIS = game:GetService("UserInputService")
 			_G.ModeV = "Purity" -- Default
@@ -2797,50 +2733,8 @@ local function C_c()
 			        end)
 			    end
 			end
-
-
-
 			-- Initial play
 			playModeMusic()
-
-
-			local modeGradients = {
-				["Purity"]      = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(180, 200, 255))
-			}
-
-			local function updateUI()
-				local modeName = tostring(_G.ModeV)
-				local grad = modeGradients[modeName] or modeGradients["Purity"]
-				local color = grad.Keypoints[1].Value
-				modeLabel.Text, scifiLabel.Text = "[ "..modeName:upper().." ]", ""
-				modeLabel.TextColor3, mainHUDFrame.BorderColor3, scifiLabel.TextColor3 = color, color, color
-				sigilGradient.Color, bottomG.Color, leftG.Color, rightG.Color = grad, grad, grad, grad
-			end
-
-			-- Input Logic
-			local inputConn;
-			inputConn = UserInputService.InputBegan:Connect(function(input, gp)
-					if not sg.Parent then
-							inputConn:Disconnect()
-							return
-					end
-					if gp then
-							return
-					end
-					local target = keyBinds[input.KeyCode]
-			end)
-
-
-			-- Render Loop
-			local lastM, count = "", 0
-			local renderConn; renderConn = RunService.RenderStepped:Connect(function(dt)
-				if not sg.Parent then renderConn:Disconnect() return end
-				count = count + dt
-				sigil.Rotation = sigil.Rotation - (140 * dt)
-				scifiLabel.Rotation = math.sin(count * 2) * 5
-				scifiLabel.Position = UDim2.new(0.03, 0, 0.88 + (math.sin(count * 1.5) * 0.02), 0)
-				if _G.ModeV ~= lastM then lastM = _G.ModeV; updateUI() end
-			end)
 		end)
 end;
 
