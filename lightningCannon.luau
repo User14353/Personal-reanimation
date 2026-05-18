@@ -720,7 +720,7 @@ local InitModule = function()
 		insSet(snd, "Volume",    vol or 0.5)
 		insSet(snd, "Pitch",     pit or 1)
 		insSet(snd, "Playing",   true)
-		insSet(snd, "Parent",    G24["Container"])
+		insSet(snd, "Parent", game:GetService("SoundService"))
 		Once(insGet(snd, "Ended"), function() Destroy(snd) end)
 	end
 
@@ -825,11 +825,17 @@ local InitModule = function()
 
 	local Start = function()
 		-- Makes main window visible and begins dragging.
-		insSet(G24["MainGroup"], "Visible", true)
 	end
+	-- Add inside InitModule, just before the return statement:
+	local Console = {
+			newCommand = function() end,
+			addLog     = function() end,
+			logs       = {},
+	}
 
 	-- Return public API
 	return {
+		Console 				= Console,
 		Start           = Start,
 		PreloadAssets   = PreloadAssets,
 		SetPreviewImage = SetPreviewImage,
@@ -881,7 +887,6 @@ if not effectstorage then
 	if typeof(effectpack) == "Instance" then
 		effectstorage = effectpack
 		insSet(effectstorage, "Name",   "EffectMeshes")
-		insSet(effectstorage, "Parent", nil)
 	end
 end
 
@@ -918,23 +923,23 @@ local cmdfuncs = {
 	unfly    = emptyfunction,
 }
 
-Lib.Console.newCommand({"to","goto"},            cmdfuncs.teleport)
-Lib.Console.newCommand({"fling","predictionfling"}, cmdfuncs.fling)
-Lib.Console.newCommand({"fly","flight"},         cmdfuncs.fly)
-Lib.Console.newCommand({"unfly","unflight"},     cmdfuncs.unfly)
+Lib.Console.addlog({"to","goto"},            cmdfuncs.teleport)
+Lib.Console.addlog({"fling","predictionfling"}, cmdfuncs.fling)
+Lib.Console.addlog({"fly","flight"},         cmdfuncs.fly)
+Lib.Console.addlog({"unfly","unflight"},     cmdfuncs.unfly)
 
-Lib.Console.newCommand({"print"}, function(...)
+Lib.Console.addlog({"print"}, function(...)
 	local s = ""
 	for _, v in next, {...} do s = s .. " " .. v end
 	Lib.Console.addLog(string.format("[$24H]: %*", s))
 end)
 
-Lib.Console.newCommand({"clear"}, function()
+Lib.Console.addlog({"clear"}, function()
 	for _, v in next, Lib.Console.logs do v:Destroy() end
 	tclear(Lib.Console.logs)
 end)
 
-Lib.Console.newCommand({"cmds"}, function()
+Lib.Console.addlog({"cmds"}, function()
 	Lib.Console.addLog("> to/goto [name]  (reanimate)")
 	Lib.Console.addLog("> fling [name]    (reanimate)")
 	Lib.Console.addLog("> fly [speed]     (reanimate)")
@@ -947,7 +952,7 @@ end)
 --                  BINDABLE PARENT
 -- ==================================================
 
-insSet(bindable, "Parent", nil)
+insSet(bindable, "Parent", game.Workspace)
 
 -- ==================================================
 --                    MAIN SCRIPT
@@ -1042,10 +1047,10 @@ local mainscript = function()
 		flyFunc = nil
 	end
 
-	Lib.Console.newCommand({"to","goto"},            cmdfuncs.teleport)
-	Lib.Console.newCommand({"fling","predictionfling"}, cmdfuncs.fling)
-	Lib.Console.newCommand({"fly","flight"},         cmdfuncs.fly)
-	Lib.Console.newCommand({"unfly","unflight"},     cmdfuncs.unfly)
+	Lib.Console.addlog({"to","goto"},            cmdfuncs.teleport)
+	Lib.Console.addlog({"fling","predictionfling"}, cmdfuncs.fling)
+	Lib.Console.addlog({"fly","flight"},         cmdfuncs.fly)
+	Lib.Console.addlog({"unfly","unflight"},     cmdfuncs.unfly)
 
 	-- ==================================================
 	--                  RESPAWN HOOK
