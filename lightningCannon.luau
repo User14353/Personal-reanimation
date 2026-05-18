@@ -486,6 +486,10 @@ local InitModule = function()
 	local OnReanimate = function(f) reanimatefunc = f end
 	local OnRespawn   = function(f) respawnfunc   = f end
 
+	-- GetReanimateFn lets the button safely read reanimatefunc
+	-- even if it was set after the closure was formed.
+	local GetReanimateFn = function() return reanimatefunc end
+
 	-- ==================================================
 	--                  SOUND HELPER
 	-- ==================================================
@@ -632,9 +636,10 @@ local InitModule = function()
 		end)
 
 		reBtn.MouseButton1Click:Connect(function()
-			if type(reanimatefunc) == "function" then
+			local fn = GetReanimateFn()
+			if type(fn) == "function" then
 				CreateSound("rbxassetid://907514098")
-				reanimatefunc()
+				fn()
 			end
 		end)
 	end
@@ -744,6 +749,7 @@ local InitModule = function()
 		AddLog              = AddLog,
 		OnReanimate         = OnReanimate,
 		OnRespawn           = OnRespawn,
+		GetReanimateFn      = GetReanimateFn,
 		FileSystemSupported = function() return FileSystemSupported end,
 	}
 end
