@@ -589,8 +589,6 @@ local InitModule = function()
 	LMG2L["UIStroke_b"]["Thickness"]       = 2
 	LMG2L["UIStroke_b"]["Color"]           = Color3.fromRGB(59, 30, 0)
 
-	LMG2L["LocalScript_c"] = Instance.new("LocalScript", LMG2L["TextButton_9"])
-
 	LMG2L["UIStroke_d"] = Instance.new("UIStroke", LMG2L["Frame_2"])
 	LMG2L["UIStroke_d"]["Transparency"] = 0.3
 	LMG2L["UIStroke_d"]["Thickness"]    = 3
@@ -896,14 +894,14 @@ local mainscript = function()
 	local LeftHip        = getJoint("Left Hip")
 	local Neck           = getJoint("Neck")
 
-	local gun                    = getPartFromMesh(6831441507, 6833003967)
-	local AJBackAccessory        = getPartJoint(gun)
-	local Pixie                  = getPartFromMesh(128216670, 150379943)
-	local SpringPixie_150381051_LC = getPartJoint(Pixie)
-	local staff                  = getPartFromMesh(5548423017, 5548423938)
-	local CrystalStaff           = getPartJoint(staff)
-	local rock                   = getPartFromMesh(4307568890, 4307568951)
-	local RockAccessory          = getPartJoint(rock)
+	local gun                      = getPartFromMesh and getPartFromMesh(6831441507, 6833003967) or nil
+	local AJBackAccessory          = (getPartJoint and gun) and getPartJoint(gun) or nil
+	local Pixie                    = getPartFromMesh and getPartFromMesh(128216670, 150379943) or nil
+	local SpringPixie_150381051_LC = (getPartJoint and Pixie) and getPartJoint(Pixie) or nil
+	local staff                    = getPartFromMesh and getPartFromMesh(5548423017, 5548423938) or nil
+	local CrystalStaff             = (getPartJoint and staff) and getPartJoint(staff) or nil
+	local rock                     = getPartFromMesh and getPartFromMesh(4307568890, 4307568951) or nil
+	local RockAccessory            = (getPartJoint and rock) and getPartJoint(rock) or nil
 
 	-- ==================================================
 	--              FLY / TELEPORT STATE
