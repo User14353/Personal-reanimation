@@ -873,7 +873,7 @@ Lib.AddLabel("Your custom label here", 0.05, Color3.new(0.75, 0.75, 0.75))
 --             EFFECT STORAGE (MESHPACK)
 -- ==================================================
 
-local effectstorage = Lib.Container:FindFirstChild("EffectMeshes")
+local effectstorage = nil
 if not effectstorage then
 	local success, effectpack = pcall(function()
 		return insGet(game, "GetObjects")(game, "rbxassetid://71648554814903")[1]
@@ -881,7 +881,7 @@ if not effectstorage then
 	if typeof(effectpack) == "Instance" then
 		effectstorage = effectpack
 		insSet(effectstorage, "Name",   "EffectMeshes")
-		insSet(effectstorage, "Parent", Lib.Container)
+		insSet(effectstorage, "Parent", nil)
 	end
 end
 
@@ -947,7 +947,7 @@ end)
 --                  BINDABLE PARENT
 -- ==================================================
 
-insSet(bindable, "Parent", Lib.Container)
+insSet(bindable, "Parent", nil)
 
 -- ==================================================
 --                    MAIN SCRIPT
