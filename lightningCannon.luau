@@ -842,7 +842,6 @@ local InitModule = function()
 		OnReanimate     = OnReanimate,
 		OnRespawn       = OnRespawn,
 		FileSystemSupported = function() return FileSystemSupported end,
-		Container       = G24["Container"],
 	}
 end
 
@@ -859,7 +858,6 @@ local loadedassets = {}
 -- ==================================================
 
 local Lib = InitModule()
-Lib.SetPreviewImage(132614074697805)
 Lib.AddLog("[+] Base template loaded", 0.1)
 
 -- ==================================================
