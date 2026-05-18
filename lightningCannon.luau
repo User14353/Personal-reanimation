@@ -366,18 +366,31 @@ end
 --                 REANIMATE CORE
 -- ==================================================
 
+-- cframes table lives outside reanimate so mainscript can reference it
+local cframes = {}
+local onnewcamera = nil
+
 local reanimate = function()
-	local novoid      = true
-	local speedlimit  = 3000
-	local retVelTime  = 0.51
-	local walkSpeed   = 16
-	local jumpPower   = 50
-	local gravity     = 196.2
+	local novoid     = true
+	local speedlimit = 3000
+	local retVelTime = 0.51
+	local walkSpeed  = 16
+	local jumpPower  = 50
+	local gravity    = 196.2
 	local ctrlclicktp = ctrltp
 	local clickfling  = clickfling
 	local flingvel    = v3(15000, 16000, 15000)
 
-	if stopreanimate() then return end
+	if stopreanimate() then
+		local SS = game:GetService("SoundService")
+		for _, obj in ipairs(SS:GetChildren()) do
+			if obj.Name:find("ModeMusic_") then obj:Destroy() end
+		end
+		local pg2 = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+		local hud = pg2:FindFirstChild("LightningCannonHud")
+		if hud then hud:Destroy() end
+		return
+	end
 
 	c = insGet(lp, "Character")
 	if not (c and IsDescendantOf(c, ws)) then return end
@@ -391,6 +404,13 @@ local reanimate = function()
 
 	Once(insGet(bindable, "Event"), stopreanimate)
 
+	-- Initial CFrame for mesh-part registration
+	local cfr = insGet(rootpart, "CFrame")
+	local pos  = cfGet(cfr, "Position")
+	cfr = cfl(pos, pos + cfGet(cfr, "LookVector") * v3_101)
+
+	tclear(cframes)
+
 	local R6parts = {
 		head     = { Name = "Head"             },
 		torso    = { Name = "Torso"            },
@@ -402,14 +422,23 @@ local reanimate = function()
 	}
 	rootpart = R6parts.root
 
+	-- Seed cframes with each R6 part
+	for _, v in next, R6parts do
+		cframes[v] = cfr
+	end
+
 	local joints = {
-		{ Name="Neck",           Part0=R6parts.torso,    Part1=R6parts.head,     C0=cf(0,1,0,-1,0,0,0,0,1,0,1,-0),   C1=cf(0,-0.5,0,-1,0,0,0,0,1,0,1,-0) },
-		{ Name="RootJoint",      Part0=rootpart,          Part1=R6parts.torso,    C0=cf(0,0,0,-1,0,0,0,0,1,0,1,-0),   C1=cf(0,0,0,-1,0,0,0,0,1,0,1,-0)    },
+		{ Name="Neck",           Part0=R6parts.torso,    Part1=R6parts.head,     C0=cf(0,1,0,-1,0,0,0,0,1,0,1,-0),   C1=cf(0,-0.5,0,-1,0,0,0,0,1,0,1,-0)  },
+		{ Name="RootJoint",      Part0=rootpart,          Part1=R6parts.torso,    C0=cf(0,0,0,-1,0,0,0,0,1,0,1,-0),   C1=cf(0,0,0,-1,0,0,0,0,1,0,1,-0)     },
 		{ Name="Right Shoulder", Part0=R6parts.torso,    Part1=R6parts.rightArm, C0=cf(1,0.5,0,0,0,1,0,1,-0,-1,0,0), C1=cf(-0.5,0.5,0,0,0,1,0,1,-0,-1,0,0) },
-		{ Name="Left Shoulder",  Part0=R6parts.torso,    Part1=R6parts.leftArm,  C0=cf(-1,0.5,0,0,0,-1,0,1,0,1,0,0), C1=cf(0.5,0.5,0,0,0,-1,0,1,0,1,0,0) },
-		{ Name="Right Hip",      Part0=R6parts.torso,    Part1=R6parts.rightLeg, C0=cf(1,-1,0,0,0,1,0,1,-0,-1,0,0),  C1=cf(0.5,1,0,0,0,1,0,1,-0,-1,0,0)  },
-		{ Name="Left Hip",       Part0=R6parts.torso,    Part1=R6parts.leftLeg,  C0=cf(-1,-1,0,0,0,-1,0,1,0,1,0,0),  C1=cf(-0.5,1,0,0,0,-1,0,1,0,1,0,0)  },
+		{ Name="Left Shoulder",  Part0=R6parts.torso,    Part1=R6parts.leftArm,  C0=cf(-1,0.5,0,0,0,-1,0,1,0,1,0,0), C1=cf(0.5,0.5,0,0,0,-1,0,1,0,1,0,0)  },
+		{ Name="Right Hip",      Part0=R6parts.torso,    Part1=R6parts.rightLeg, C0=cf(1,-1,0,0,0,1,0,1,-0,-1,0,0),  C1=cf(0.5,1,0,0,0,1,0,1,-0,-1,0,0)   },
+		{ Name="Left Hip",       Part0=R6parts.torso,    Part1=R6parts.leftLeg,  C0=cf(-1,-1,0,0,0,-1,0,1,0,1,0,0),  C1=cf(-0.5,1,0,0,0,-1,0,1,0,1,0,0)   },
 	}
+
+	-- ==================================================
+	--              HELPER FUNCTIONS
+	-- ==================================================
 
 	local getJoint = function(name)
 		for _, v in next, joints do
@@ -418,17 +447,74 @@ local reanimate = function()
 		return { C0 = cf_0, C1 = cf_0 }
 	end
 
-	local setWalkSpeed  = function(n) if type(n) ~= "number" then n = 16    end walkSpeed = n end
-	local setJumpPower  = function(n) if type(n) ~= "number" then n = 50    end jumpPower = n end
-	local setGravity    = function(n) if type(n) ~= "number" then n = 196.2 end gravity   = n end
+	local getPart = function(name, blacklist)
+		if blacklist then
+			for part, _ in next, cframes do
+				if (part.Name == name) and not tfind(blacklist, part) then return part end
+			end
+		else
+			for part, _ in next, cframes do
+				if part.Name == name then return part end
+			end
+		end
+		return nil
+	end
+
+	local getPartFromMesh = function(m, t, blacklist)
+		if blacklist then
+			for v, _ in next, cframes do
+				if v.m and (not tfind(blacklist, v)) and sfind(tostring(v.m), tostring(m)) and sfind(tostring(v.t), tostring(t)) then
+					return v
+				end
+			end
+		else
+			for v, _ in next, cframes do
+				if v.m and sfind(tostring(v.m), tostring(m)) and sfind(tostring(v.t), tostring(t)) then
+					return v
+				end
+			end
+		end
+		-- Not found — create a placeholder mesh-part entry
+		local p = { m = tostring(m), t = tostring(t) }
+		cframes[p] = cfr
+		local j = { C0 = cf_0, C1 = cf_0, Part0 = p }
+		p.j = j
+		return p
+	end
+
+	local getPartJoint = function(p)
+		if p and cframes[p] then
+			if p.j then return p.j end
+			for _, v in next, joints do
+				if v.Part0 == p then return v end
+			end
+			for _, v in next, joints do
+				if v.Part1 == p then return v end
+			end
+		end
+		return { C0 = cf_0, C1 = cf_0 }  -- safe fallback so Lerp calls don't error
+	end
+
+	local getAccWeldFromMesh = function(m, t)
+		return getPartJoint(getPartFromMesh(m, t))
+	end
+
+	local setWalkSpeed = function(n) if type(n) ~= "number" then n = 16    end walkSpeed = n end
+	local setJumpPower = function(n) if type(n) ~= "number" then n = 50    end jumpPower = n end
+	local setGravity   = function(n) if type(n) ~= "number" then n = 196.2 end gravity   = n end
 
 	return {
-		R6parts      = R6parts,
-		joints       = joints,
-		getJoint     = getJoint,
-		setWalkSpeed = setWalkSpeed,
-		setJumpPower = setJumpPower,
-		setGravity   = setGravity,
+		R6parts          = R6parts,
+		joints           = joints,
+		cframes          = cframes,
+		getJoint         = getJoint,
+		getPart          = getPart,
+		getPartFromMesh  = getPartFromMesh,
+		getPartJoint     = getPartJoint,
+		getAccWeldFromMesh = getAccWeldFromMesh,
+		setWalkSpeed     = setWalkSpeed,
+		setJumpPower     = setJumpPower,
+		setGravity       = setGravity,
 	}
 end
 
@@ -894,14 +980,14 @@ local mainscript = function()
 	local LeftHip        = getJoint("Left Hip")
 	local Neck           = getJoint("Neck")
 
-	local gun                      = getPartFromMesh and getPartFromMesh(6831441507, 6833003967) or nil
-	local AJBackAccessory          = (getPartJoint and gun) and getPartJoint(gun) or nil
-	local Pixie                    = getPartFromMesh and getPartFromMesh(128216670, 150379943) or nil
-	local SpringPixie_150381051_LC = (getPartJoint and Pixie) and getPartJoint(Pixie) or nil
-	local staff                    = getPartFromMesh and getPartFromMesh(5548423017, 5548423938) or nil
-	local CrystalStaff             = (getPartJoint and staff) and getPartJoint(staff) or nil
-	local rock                     = getPartFromMesh and getPartFromMesh(4307568890, 4307568951) or nil
-	local RockAccessory            = (getPartJoint and rock) and getPartJoint(rock) or nil
+	local gun                      = getPartFromMesh(6831441507, 6833003967) or nil
+	local AJBackAccessory          = getPartJoint(gun) or nil
+	local Pixie                    = getPartFromMesh(128216670, 150379943) or nil
+	local SpringPixie_150381051_LC = getPartJoint(Pixie) or nil
+	local staff                    = getPartFromMesh(5548423017, 5548423938) or nil
+	local CrystalStaff             = getPartJoint(staff) or nil
+	local rock                     = getPartFromMesh(4307568890, 4307568951) or nil
+	local RockAccessory            = getPartJoint(rock) or nil
 
 	-- ==================================================
 	--              FLY / TELEPORT STATE
