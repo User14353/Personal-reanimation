@@ -1216,7 +1216,31 @@ local mainscript = function()
 	-- ==================================================
 	--                    MUSIC
 	-- ==================================================
+	-- Setup Keybinds
+	local UIS = game:GetService("UserInputService")
+	_G.ModeV = "gunless" -- Default
 
+	local keyBinds = {
+			[Enum.KeyCode.F] = "gun"
+	}
+	_G.HatInputConnection = UIS.InputBegan:Connect(function(input, gpe)
+			if gpe then return end
+			
+			local selectedMode = keyBinds[input.KeyCode]
+			if selectedMode then
+					if _G.ModeV == selectedMode then
+							_G.ModeV = "gunless"
+					else
+							_G.ModeV = selectedMode
+					end
+					
+					print("Switched to: " .. _G.ModeV)
+
+					handleModeExecution(_G.ModeV)
+					playModeMusic()
+					updateUI()
+			end
+	end)
 	local Folder = "ExiresPersonal"
 	if isfolder and not isfolder(Folder) then makefolder(Folder) end
 	local Path = Folder .. "/"
