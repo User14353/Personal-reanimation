@@ -1236,9 +1236,7 @@ local mainscript = function()
 					
 					print("Switched to: " .. _G.ModeV)
 
-					handleModeExecution(_G.ModeV)
 					playModeMusic()
-					updateUI()
 			end
 	end)
 	local Folder = "ExiresPersonal"
