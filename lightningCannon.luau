@@ -2618,9 +2618,9 @@ local function C_c()
 			SpringPixie_150381051_LC.C0=Lerp(SpringPixie_150381051_LC.C0,cfMul(cf(0.2000001668930054,15,-0.1002724319696426),angles(0,0,0)),deltaTime)
 			CrystalStaff.C0=Lerp(CrystalStaff.C0,cfMul(cf(0.5000465794613485,1.547993442468476,-0.15),angles(0,0,-0.01)),deltaTime)
 			RockAccessory.C0=Lerp(RockAccessory.C0,cfMul(cf(-0.5793895721435547,-15,0.07364007830619812),angles(0,0,0)),deltaTime)
-			AJBackAccessory.C0=cf(1,0,0)*angles(rad(0),rad(0),rad(0))
+			AJBackAccessory.C0=cf(-1,0,0)*angles(rad(0),rad(0),rad(0))
 			AJBackAccessory.Part1=getPart("Torso") AJBackAccessory.C1=cf_0
-			CrystalStaff.C0=cf(1,0,0)*angles(rad(0),rad(0),rad(0))
+			CrystalStaff.C0=cf(-1,0,0)*angles(rad(0),rad(0),rad(0))
 			CrystalStaff.Part1=getPart("Torso")   CrystalStaff.C1=cf_0
 		end,
 		walk = function()
@@ -2634,9 +2634,9 @@ local function C_c()
 			SpringPixie_150381051_LC.C0=Lerp(SpringPixie_150381051_LC.C0,cfMul(cf(0.2000001668930054,15,-0.1002724319696426),angles(0,0,0)),deltaTime)
 			CrystalStaff.C0=Lerp(CrystalStaff.C0,cfMul(cf(0.5000465794613485,1.547993442468476,-0.15),angles(0,0,0.66)),deltaTime)
 			RockAccessory.C0=Lerp(RockAccessory.C0,cfMul(cf(-0.5793895721435547,-15,0.07364007830619812),angles(0,0,0)),deltaTime)
-			AJBackAccessory.C0=cf(1,0,0)*angles(rad(0),rad(0),rad(0))
+			AJBackAccessory.C0=cf(-1,0,0)*angles(rad(0),rad(0),rad(0))
 			AJBackAccessory.Part1=getPart("Torso") AJBackAccessory.C1=cf_0
-			CrystalStaff.C0=cf(1,0,0)*angles(rad(0),rad(0),rad(0))
+			CrystalStaff.C0=cf(-1,0,0)*angles(rad(0),rad(0),rad(0))
 			CrystalStaff.Part1=getPart("Torso")   CrystalStaff.C1=cf_0
 		end,
 		jump = function()
@@ -2650,9 +2650,9 @@ local function C_c()
 			SpringPixie_150381051_LC.C0=Lerp(SpringPixie_150381051_LC.C0,cfMul(cf(0.2000001668930054,15,-0.1002724319696426),angles(0,0,0)),deltaTime)
 			CrystalStaff.C0=Lerp(CrystalStaff.C0,cfMul(cf(0.5000465794613485,1.547993442468476,-0.15),angles(0,0,0.66)),deltaTime)
 			RockAccessory.C0=Lerp(RockAccessory.C0,cfMul(cf(-0.5793895721435547,-15,0.07364007830619812),angles(0,0,0)),deltaTime)
-			AJBackAccessory.C0=cf(1,0,0)*angles(rad(0),rad(0),rad(0))
+			AJBackAccessory.C0=cf(-1,0,0)*angles(rad(0),rad(0),rad(0))
 			AJBackAccessory.Part1=getPart("Torso") AJBackAccessory.C1=cf_0
-			CrystalStaff.C0=cf(1,0,0)*angles(rad(0),rad(0),rad(0))
+			CrystalStaff.C0=cf(-1,0,0)*angles(rad(0),rad(0),rad(0))
 			CrystalStaff.Part1=getPart("Torso")   CrystalStaff.C1=cf_0
 		end,
 		fall = function()
@@ -2666,9 +2666,9 @@ local function C_c()
 			SpringPixie_150381051_LC.C0=Lerp(SpringPixie_150381051_LC.C0,cfMul(cf(0.2000001668930054,15,-0.1002724319696426),angles(0,0,0)),deltaTime)
 			CrystalStaff.C0=Lerp(CrystalStaff.C0,cfMul(cf(0.5000465794613485,1.547993442468476,-0.15),angles(0,0,0.66)),deltaTime)
 			RockAccessory.C0=Lerp(RockAccessory.C0,cfMul(cf(-0.5793895721435547,-15,0.07364007830619812),angles(0,0,0)),deltaTime)
-			AJBackAccessory.C0=cf(1,0,0)*angles(rad(0),rad(0),rad(0))
+			AJBackAccessory.C0=cf(-1,0,0)*angles(rad(0),rad(0),rad(0))
 			AJBackAccessory.Part1=getPart("Torso") AJBackAccessory.C1=cf_0
-			CrystalStaff.C0=cf(1,0,0)*angles(rad(0),rad(0),rad(0))
+			CrystalStaff.C0=cf(-1,0,0)*angles(rad(0),rad(0),rad(0))
 			CrystalStaff.Part1=getPart("Torso")   CrystalStaff.C1=cf_0
 		end,
 	})
@@ -2687,7 +2687,7 @@ local function C_c()
 			RockAccessory.C0=Lerp(RockAccessory.C0,cfMul(cf(-0.5793895721435547,-15,0.07364007830619812),angles(0,0,0)),deltaTime)
 			AJBackAccessory.C0=cf(0,0,0)*angles(rad(0),rad(0),rad(90))
 			AJBackAccessory.Part1=getPart("Right Arm")
-			CrystalStaff.C0=cf(0,0,0)*angles(rad(0),rad(0),rad(90))
+			CrystalStaff.C0=cf(0,0,0)*angles(rad(90),rad(90),rad(90))
 			CrystalStaff.C1=cf_0 CrystalStaff.Part1=getPart("Right Arm")
 		end,
 		walk = function()
