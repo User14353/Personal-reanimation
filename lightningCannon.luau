@@ -987,30 +987,31 @@ local mainscript = function()
 	--             JOINT / PART REFERENCES
 	-- ==================================================
 
-	local velYchg         = t.velYchg
-	local Yvel            = t.Yvel
-	local raycastlegs     = t.raycastlegs
+	local velYchg         = t.velYchg         or emptyfunction
+	local Yvel            = t.Yvel            or 0
+	local raycastlegs     = t.raycastlegs     or emptyfunction
+	local velbycfrvec     = t.velbycfrvec     or emptyfunction
+	local setCamOffset    = t.setCamOffset    or emptyfunction
+	local getVel          = t.getVel          or emptyfunction
+	local IsWalking       = t.IsWalking       or emptyfunction
+	local setCfr          = t.setCfr          or emptyfunction
+	local refreshjoints   = t.refreshjoints   or emptyfunction
+	local onnewcamera     = t.onnewcamera     or emptyfunction
+	local setHipHeight    = t.setHipHeight    or emptyfunction
+	-- these DO exist in t, keep them as-is:
 	local getPartFromMesh = t.getPartFromMesh
 	local getPartJoint    = t.getPartJoint
-	local velbycfrvec     = t.velbycfrvec
 	local setWalkSpeed    = t.setWalkSpeed
-	local rgb             = Color3.fromRGB
 	local R6parts         = t.R6parts
-	local setCamOffset    = t.setCamOffset
-	local Player          = game.Players.LocalPlayer
-	local getVel          = t.getVel
-	local IsWalking       = t.IsWalking
 	local getJoint        = t.getJoint
-	local setCfr          = t.setCfr
 	local cframes         = t.cframes
 	local joints          = t.joints
-	local refreshjoints   = t.refreshjoints
-	local onnewcamera     = t.onnewcamera
-	local SoundService    = game.SoundService
-	local setHipHeight    = t.setHipHeight
 	local getAccWeldFromMesh = t.getAccWeldFromMesh
 	local getPart         = t.getPart
-	local addmode         = t.addmode
+	local setJumpPower    = t.setJumpPower
+	local setGravity      = t.setGravity
+	-- pull addmode from Lib, not t:
+	local addmode         = Lib.addmode
 	local setJumpPower    = t.setJumpPower
 	local setGravity      = t.setGravity
 
