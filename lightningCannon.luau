@@ -278,17 +278,17 @@ local emptyfunction = function() end
 --               REANIMATE SETTINGS
 -- ==================================================
 
-local pdloadedtime         = nil
-local allowshiftlock       = true
-local ctrltp               = false
-local placeholders         = false
-local clickfling           = false
+local pdloadedtime          = nil
+local allowshiftlock        = true
+local ctrltp                = false
+local placeholders          = false
+local clickfling            = false
 local highlightflingtargets = false
-local flingchangestate     = 1
-local respawntp            = 1
-local breakjointsmethod    = 3
-local simrad               = true
-local hidedeatheffect      = true
+local flingchangestate      = 1
+local respawntp             = 1
+local breakjointsmethod     = 3
+local simrad                = true
+local hidedeatheffect       = true
 
 local discharscripts = function(v)
 	if IsA(v, "LocalScript") or IsA(v, "Script") then
@@ -355,6 +355,7 @@ local stopreanimate = function()
 		c = nil
 		if gw then Destroy(gw) end
 		for _, v in next, cons do Disconnect(v) end
+		tclear(cons)
 		if onrespawn then onrespawn() onrespawn = nil end
 		SetCore(sg, "ResetButtonCallback", true)
 		return true
@@ -366,8 +367,7 @@ end
 --                 REANIMATE CORE
 -- ==================================================
 
--- cframes table lives outside reanimate so mainscript can reference it
-local cframes = {}
+local cframes   = {}
 local onnewcamera = nil
 
 local reanimate = function()
@@ -378,7 +378,7 @@ local reanimate = function()
 	local jumpPower  = 50
 	local gravity    = 196.2
 	local ctrlclicktp = ctrltp
-	local clickfling  = clickfling
+	local clickfling_ = clickfling
 	local flingvel    = v3(15000, 16000, 15000)
 
 	if stopreanimate() then
@@ -392,7 +392,8 @@ local reanimate = function()
 		return
 	end
 
-	c = insGet(lp, "Character")
+	-- Wait for character
+	c = insGet(lp, "Character") or insGet(lp, "CharacterAdded"):Wait()
 	if not (c and IsDescendantOf(c, ws)) then return end
 
 	local rootpart = FindFirstChild(c, "HumanoidRootPart")
@@ -404,7 +405,6 @@ local reanimate = function()
 
 	Once(insGet(bindable, "Event"), stopreanimate)
 
-	-- Initial CFrame for mesh-part registration
 	local cfr = insGet(rootpart, "CFrame")
 	local pos  = cfGet(cfr, "Position")
 	cfr = cfl(pos, pos + cfGet(cfr, "LookVector") * v3_101)
@@ -422,7 +422,6 @@ local reanimate = function()
 	}
 	rootpart = R6parts.root
 
-	-- Seed cframes with each R6 part
 	for _, v in next, R6parts do
 		cframes[v] = cfr
 	end
@@ -474,7 +473,6 @@ local reanimate = function()
 				end
 			end
 		end
-		-- Not found — create a placeholder mesh-part entry
 		local p = { m = tostring(m), t = tostring(t) }
 		cframes[p] = cfr
 		local j = { C0 = cf_0, C1 = cf_0, Part0 = p }
@@ -492,7 +490,7 @@ local reanimate = function()
 				if v.Part1 == p then return v end
 			end
 		end
-		return { C0 = cf_0, C1 = cf_0 }  -- safe fallback so Lerp calls don't error
+		return { C0 = cf_0, C1 = cf_0 }
 	end
 
 	local getAccWeldFromMesh = function(m, t)
@@ -504,17 +502,17 @@ local reanimate = function()
 	local setGravity   = function(n) if type(n) ~= "number" then n = 196.2 end gravity   = n end
 
 	return {
-		R6parts          = R6parts,
-		joints           = joints,
-		cframes          = cframes,
-		getJoint         = getJoint,
-		getPart          = getPart,
-		getPartFromMesh  = getPartFromMesh,
-		getPartJoint     = getPartJoint,
+		R6parts            = R6parts,
+		joints             = joints,
+		cframes            = cframes,
+		getJoint           = getJoint,
+		getPart            = getPart,
+		getPartFromMesh    = getPartFromMesh,
+		getPartJoint       = getPartJoint,
 		getAccWeldFromMesh = getAccWeldFromMesh,
-		setWalkSpeed     = setWalkSpeed,
-		setJumpPower     = setJumpPower,
-		setGravity       = setGravity,
+		setWalkSpeed       = setWalkSpeed,
+		setJumpPower       = setJumpPower,
+		setGravity         = setGravity,
 	}
 end
 
@@ -542,10 +540,8 @@ local InitModule = function()
 
 	local InitiateFiles = function()
 		if not (makefolder or writefile or isfolder or isfile) then return false end
-
 		local FolderName = Configurations.FolderName
 		local FileName   = Configurations.FileName
-
 		if not isfolder(FolderName) then
 			makefolder(FolderName)
 			makefolder(FolderName .. "/Scripts")
@@ -564,22 +560,17 @@ local InitModule = function()
 	-- ==================================================
 	--              REANIMATE / RESPAWN HOOKS
 	-- ==================================================
-	-- Declared early so CreateSound and C_c can close over reanimatefunc.
 
 	local reanimatefunc = nil
 	local respawnfunc   = nil
 
 	local OnReanimate = function(f) reanimatefunc = f end
 	local OnRespawn   = function(f) respawnfunc   = f end
-
-	-- GetReanimateFn lets the button safely read reanimatefunc
-	-- even if it was set after the closure was formed.
 	local GetReanimateFn = function() return reanimatefunc end
 
 	-- ==================================================
 	--                  SOUND HELPER
 	-- ==================================================
-	-- Declared before C_c so the reanimate button can call it.
 
 	local CreateSound = function(id, vol, pit)
 		local snd = i("Sound")
@@ -607,12 +598,12 @@ local InitModule = function()
 	LMG2L["ScreenGui_1"]["ResetOnSpawn"]   = false
 
 	LMG2L["Frame_2"] = Instance.new("Frame", LMG2L["ScreenGui_1"])
-	LMG2L["Frame_2"]["BorderSizePixel"]      = 0
-	LMG2L["Frame_2"]["BackgroundColor3"]     = Color3.fromRGB(255, 170, 115)
-	LMG2L["Frame_2"]["Size"]                 = UDim2.new(0, 450, 0, 186)
+	LMG2L["Frame_2"]["BorderSizePixel"]        = 0
+	LMG2L["Frame_2"]["BackgroundColor3"]       = Color3.fromRGB(255, 170, 115)
+	LMG2L["Frame_2"]["Size"]                   = UDim2.new(0, 450, 0, 186)
 	LMG2L["Frame_2"]["BackgroundTransparency"] = 0.3
-	LMG2L["Frame_2"]["AnchorPoint"]          = Vector2.new(0.5, 0.5)
-	LMG2L["Frame_2"]["Position"]             = UDim2.new(0.5, 0, 0.5, 0)
+	LMG2L["Frame_2"]["AnchorPoint"]            = Vector2.new(0.5, 0.5)
+	LMG2L["Frame_2"]["Position"]               = UDim2.new(0.5, 0, 0.5, 0)
 
 	local dragDetector = Instance.new("UIDragDetector", LMG2L["Frame_2"])
 	dragDetector.DragStyle = Enum.UIDragDetectorDragStyle.TranslatePlane
@@ -621,30 +612,30 @@ local InitModule = function()
 	LMG2L["UICorner_3"]["CornerRadius"] = UDim.new(0, 12)
 
 	LMG2L["TextLabel_4"] = Instance.new("TextLabel", LMG2L["Frame_2"])
-	LMG2L["TextLabel_4"]["BorderSizePixel"]      = 0
-	LMG2L["TextLabel_4"]["TextSize"]             = 24
-	LMG2L["TextLabel_4"]["BackgroundColor3"]     = Color3.fromRGB(158, 67, 12)
-	LMG2L["TextLabel_4"]["FontFace"]             = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-	LMG2L["TextLabel_4"]["TextColor3"]           = Color3.fromRGB(54, 17, 0)
+	LMG2L["TextLabel_4"]["BorderSizePixel"]        = 0
+	LMG2L["TextLabel_4"]["TextSize"]               = 24
+	LMG2L["TextLabel_4"]["BackgroundColor3"]       = Color3.fromRGB(158, 67, 12)
+	LMG2L["TextLabel_4"]["FontFace"]               = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+	LMG2L["TextLabel_4"]["TextColor3"]             = Color3.fromRGB(54, 17, 0)
 	LMG2L["TextLabel_4"]["BackgroundTransparency"] = 0.699
-	LMG2L["TextLabel_4"]["Size"]                 = UDim2.new(0, 450, 0, 54)
-	LMG2L["TextLabel_4"]["Text"]                 = [[Personal Reanimate]]
+	LMG2L["TextLabel_4"]["Size"]                   = UDim2.new(0, 450, 0, 54)
+	LMG2L["TextLabel_4"]["Text"]                   = [[Personal Reanimate]]
 
 	LMG2L["UICorner_5"] = Instance.new("UICorner", LMG2L["TextLabel_4"])
 	LMG2L["UICorner_5"]["CornerRadius"] = UDim.new(0, 12)
 
 	LMG2L["TextLabel2_6"] = Instance.new("TextLabel", LMG2L["Frame_2"])
-	LMG2L["TextLabel2_6"]["TextWrapped"]         = true
-	LMG2L["TextLabel2_6"]["BorderSizePixel"]     = 0
-	LMG2L["TextLabel2_6"]["TextSize"]            = 12
-	LMG2L["TextLabel2_6"]["BackgroundColor3"]    = Color3.fromRGB(158, 67, 12)
-	LMG2L["TextLabel2_6"]["FontFace"]            = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-	LMG2L["TextLabel2_6"]["TextColor3"]          = Color3.fromRGB(54, 17, 0)
+	LMG2L["TextLabel2_6"]["TextWrapped"]           = true
+	LMG2L["TextLabel2_6"]["BorderSizePixel"]       = 0
+	LMG2L["TextLabel2_6"]["TextSize"]              = 12
+	LMG2L["TextLabel2_6"]["BackgroundColor3"]      = Color3.fromRGB(158, 67, 12)
+	LMG2L["TextLabel2_6"]["FontFace"]              = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+	LMG2L["TextLabel2_6"]["TextColor3"]            = Color3.fromRGB(54, 17, 0)
 	LMG2L["TextLabel2_6"]["BackgroundTransparency"] = 0.699
-	LMG2L["TextLabel2_6"]["Size"]                = UDim2.new(0, 204, 0, 82)
-	LMG2L["TextLabel2_6"]["Text"]                = [[ my personal reanimation script - Exire]]
-	LMG2L["TextLabel2_6"]["Name"]                = [[TextLabel2]]
-	LMG2L["TextLabel2_6"]["Position"]            = UDim2.new(0, 14, 0, 76)
+	LMG2L["TextLabel2_6"]["Size"]                  = UDim2.new(0, 204, 0, 82)
+	LMG2L["TextLabel2_6"]["Text"]                  = [[ my personal reanimation script - Exire]]
+	LMG2L["TextLabel2_6"]["Name"]                  = [[TextLabel2]]
+	LMG2L["TextLabel2_6"]["Position"]              = UDim2.new(0, 14, 0, 76)
 
 	LMG2L["UICorner_7"] = Instance.new("UICorner", LMG2L["TextLabel2_6"])
 	LMG2L["UICorner_7"]["CornerRadius"] = UDim.new(0, 12)
@@ -656,15 +647,15 @@ local InitModule = function()
 	LMG2L["UIStroke_8"]["Color"]           = Color3.fromRGB(59, 30, 0)
 
 	LMG2L["TextButton_9"] = Instance.new("TextButton", LMG2L["Frame_2"])
-	LMG2L["TextButton_9"]["BorderSizePixel"]      = 0
-	LMG2L["TextButton_9"]["TextSize"]             = 24
-	LMG2L["TextButton_9"]["TextColor3"]           = Color3.fromRGB(54, 17, 0)
-	LMG2L["TextButton_9"]["BackgroundColor3"]     = Color3.fromRGB(149, 52, 0)
-	LMG2L["TextButton_9"]["FontFace"]             = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+	LMG2L["TextButton_9"]["BorderSizePixel"]        = 0
+	LMG2L["TextButton_9"]["TextSize"]               = 24
+	LMG2L["TextButton_9"]["TextColor3"]             = Color3.fromRGB(54, 17, 0)
+	LMG2L["TextButton_9"]["BackgroundColor3"]       = Color3.fromRGB(149, 52, 0)
+	LMG2L["TextButton_9"]["FontFace"]               = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
 	LMG2L["TextButton_9"]["BackgroundTransparency"] = 0.8
-	LMG2L["TextButton_9"]["Size"]                 = UDim2.new(0, 194, 0, 82)
-	LMG2L["TextButton_9"]["Text"]                 = [[Reanimate]]
-	LMG2L["TextButton_9"]["Position"]             = UDim2.new(0, 230, 0, 76)
+	LMG2L["TextButton_9"]["Size"]                   = UDim2.new(0, 194, 0, 82)
+	LMG2L["TextButton_9"]["Text"]                   = [[Reanimate]]
+	LMG2L["TextButton_9"]["Position"]               = UDim2.new(0, 230, 0, 76)
 
 	LMG2L["UICorner_a"] = Instance.new("UICorner", LMG2L["TextButton_9"])
 	LMG2L["UICorner_a"]["CornerRadius"] = UDim.new(0, 12)
@@ -682,12 +673,12 @@ local InitModule = function()
 
 	LMG2L["MinButton"] = Instance.new("TextButton", LMG2L["Frame_2"])
 	local minBtn = LMG2L["MinButton"]
-	minBtn.Size                 = UDim2.new(0, 30, 0, 30)
-	minBtn.Position             = UDim2.new(1, -35, 0, 5)
-	minBtn.BackgroundColor3     = Color3.fromRGB(158, 67, 12)
+	minBtn.Size                   = UDim2.new(0, 30, 0, 30)
+	minBtn.Position               = UDim2.new(1, -35, 0, 5)
+	minBtn.BackgroundColor3       = Color3.fromRGB(158, 67, 12)
 	minBtn.BackgroundTransparency = 0.8
-	minBtn.Text                 = "—"
-	minBtn.TextColor3           = Color3.fromRGB(255, 255, 255)
+	minBtn.Text                   = "—"
+	minBtn.TextColor3             = Color3.fromRGB(255, 255, 255)
 	Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 8)
 	local MinStroke = Instance.new("UIStroke", minBtn)
 	MinStroke.Transparency    = 0.3
@@ -700,9 +691,9 @@ local InitModule = function()
 	-- ==================================================
 
 	local function C_c()
-		local mainFrame  = LMG2L["Frame_2"]
-		local minBtn     = LMG2L["MinButton"]
-		local reBtn      = LMG2L["TextButton_9"]
+		local mainFrame   = LMG2L["Frame_2"]
+		local minBtn      = LMG2L["MinButton"]
+		local reBtn       = LMG2L["TextButton_9"]
 		local isMinimized = false
 		local originalSize = mainFrame.Size
 		local tInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
@@ -723,7 +714,7 @@ local InitModule = function()
 			local fn = GetReanimateFn()
 			if type(fn) == "function" then
 				CreateSound("rbxassetid://907514098")
-				fn()
+				task.spawn(fn)
 			end
 		end)
 	end
@@ -731,51 +722,49 @@ local InitModule = function()
 	task.spawn(C_c)
 
 	-- ==================================================
-	--               TRANSITION HELPER
+	--                 CONSOLE STUB
 	-- ==================================================
 
-	local TransitionGroups = {}
-	local DoTransition = function(frame, speed, f)
-		-- [ Full implementation unchanged from original ]
+	local Console = {
+		newCommand = function() end,
+		addLog     = function() end,
+		logs       = {},
+	}
+
+	-- ==================================================
+	--                  ADDMODE SYSTEM
+	-- ==================================================
+
+	local KeyCode     = e.KeyCode
+	local defaultmode = {}
+	local modes       = { default = defaultmode }
+
+	local lerpsIdle = emptyfunction
+	local lerpsWalk = emptyfunction
+	local lerpsJump = emptyfunction
+	local lerpsFall = emptyfunction
+
+	local addmode = function(key, modeTable)
+		if (type(key) ~= "string") or (type(modeTable) ~= "table") then return end
+		for k, v in next, modeTable do
+			if type(v) ~= "function" then modeTable[k] = nil end
+		end
+		if key == "default" then
+			defaultmode  = modeTable
+			modes.default = modeTable
+			lerpsIdle    = modeTable.idle or emptyfunction
+			lerpsWalk    = modeTable.walk or emptyfunction
+			lerpsJump    = modeTable.jump or emptyfunction
+			lerpsFall    = modeTable.fall or emptyfunction
+			if modeTable.modeEntered then modeTable.modeEntered() end
+		elseif #key == 1 then
+			local enumKey  = KeyCode[supper(ssub(key, 1, 1))]
+			modes[enumKey] = modeTable
+		end
 	end
 
-	-- ==================================================
-	--              PREVIEW IMAGE HELPER
-	-- ==================================================
-
-	local SetPreviewImage = function(id, imgscale)
-		-- Sets the mode preview image in the UI.
-	end
-
-	-- ==================================================
-	--                 CONSOLE LOG HELPER
-	-- ==================================================
-
-	local AddLog = function(s, h, c)
-		-- Appends a line to the console log.
-	end
-
-	-- ==================================================
-	--               SETTINGS TAB HELPERS
-	-- ==================================================
-
-	local AddLabel = function(txt, h, c)
-	end
-
-	local AddToggleButton = function(txt, val, t, f)
-	end
-
-	local AddSwitchButton = function(txt, val, t, f)
-	end
-
-	local AddInputBox = function(txt, val, f)
-	end
-
-	-- ==================================================
-	--                 CREDITS HELPER
-	-- ==================================================
-
-	local AddCredit = function(txt, size)
+	local getLerps = function()
+		return lerpsIdle, lerpsWalk, lerpsJump, lerpsFall
 	end
 
 	-- ==================================================
@@ -783,78 +772,20 @@ local InitModule = function()
 	-- ==================================================
 
 	local PreloadAssets = function(t, f)
-		-- Shows loader overlay, preloads asset list `t`,
-		-- then calls callback `f` and hides overlay.
 		if type(f) == "function" then f() end
 	end
 
-	-- ==================================================
-	--              KEY SYSTEM (OPTIONAL)
-	-- ==================================================
-
-	local EnableKeySystem = false
-
-	-- ==================================================
-	--                   MAIN START
-	-- ==================================================
-
 	local FileSystemSupported = InitiateFiles()
 
-	local Start = function()
-		-- GUI is already visible; nothing needed here.
-	end
+	local Start      = function() end
+	local AddLog     = function() end
+	local AddLabel   = function() end
+	local AddCredit  = function() end
+	local AddToggleButton = function() end
+	local AddSwitchButton = function() end
+	local AddInputBox     = function() end
+	local SetPreviewImage = function() end
 
-	-- ==================================================
-	--                 CONSOLE STUB
-	-- ==================================================
-	-- Stub so all Lib.Console.newCommand / addLog calls
-	-- are silent no-ops until a real console is wired in.
-
-	local Console = {
-		newCommand = function() end,
-		addLog     = function() end,
-		logs       = {},
-	}
-	local mradN05 = -0.008726646259971648
-		local pi2     = math.pi / 2 - 0.0001
-		local npi2    = -pi2
-		local KeyCode  = e.KeyCode
-		local enumYXZ  = e.RotationOrder.YXZ
-
-		local mode        = "default"
-		local defaultmode = {}
-		local modes       = { default = defaultmode }
-
-		local lerpsIdle = emptyfunction
-		local lerpsWalk = emptyfunction
-		local lerpsJump = emptyfunction
-		local lerpsFall = emptyfunction
-
-		local addmode = function(key, modeTable)
-			if (type(key) ~= "string") or (type(modeTable) ~= "table") then
-				return
-			end
-			-- Strip non-function entries
-			for i, v in next, modeTable do
-				if type(v) ~= "function" then
-					modeTable[i] = nil
-				end
-			end
-			if key == "default" then
-				defaultmode      = modeTable
-				modes.default    = modeTable
-				lerpsIdle        = modeTable.idle or emptyfunction
-				lerpsWalk        = modeTable.walk or emptyfunction
-				lerpsJump        = modeTable.jump or emptyfunction
-				lerpsFall        = modeTable.fall or emptyfunction
-				if modeTable.modeEntered then
-					modeTable.modeEntered()
-				end
-			elseif #key == 1 then
-				local enumKey    = KeyCode[supper(ssub(key, 1, 1))]
-				modes[enumKey]   = modeTable
-			end
-		end
 	-- ==================================================
 	--                  RETURN PUBLIC API
 	-- ==================================================
@@ -873,7 +804,8 @@ local InitModule = function()
 		OnReanimate         = OnReanimate,
 		OnRespawn           = OnRespawn,
 		GetReanimateFn      = GetReanimateFn,
-		addmode             = addmode,   -- now accessible in mainscript
+		addmode             = addmode,
+		getLerps            = getLerps,
 		modes               = modes,
 		FileSystemSupported = function() return FileSystemSupported end,
 	}
@@ -891,14 +823,9 @@ local loadedassets = {}
 
 local Lib = InitModule()
 Lib.AddLog("[+] Base template loaded", 0.1)
-
--- ==================================================
---                 CREDITS / LABELS
--- ==================================================
-
-Lib.AddCredit("MyWorld - FDless",      17)
+Lib.AddCredit("MyWorld - FDless",       17)
 Lib.AddCredit("SGZR/SGR/SGI - Origins", 17)
-Lib.AddLabel("Your custom label here", 0.05, Color3.new(0.75, 0.75, 0.75))
+Lib.AddLabel("Your custom label here",  0.05, Color3.new(0.75, 0.75, 0.75))
 
 -- ==================================================
 --             EFFECT STORAGE (MESHPACK)
@@ -920,17 +847,8 @@ end
 --                  ASSET PRELOAD
 -- ==================================================
 
-Lib.PreloadAssets({
-	"rbxassetid://71648554814903"
-}, function()
-	local files = {
-		"azsumeo.mp3", "betrayal.mp3", "earlf.mp3",
-		"inferplyx.mp3", "lighthopes.mp3", "mayhemx.mp3",
-		"nhelv.mp3", "rpg.mp3", "solemn.mp3",
-		"revengoner.mp3", "comatose.mp3", "censored.mp3",
-		"descengoner.mp3", "massacre.mp3", "enclosure.mp3",
-	}
-	-- [ Download / cache loop goes here ]
+Lib.PreloadAssets({ "rbxassetid://71648554814903" }, function()
+	-- asset cache / download loop goes here if needed
 end)
 
 -- ==================================================
@@ -944,10 +862,10 @@ local cmdfuncs = {
 	unfly    = emptyfunction,
 }
 
-Lib.Console.newCommand({"to","goto"},               cmdfuncs.teleport)
-Lib.Console.newCommand({"fling","predictionfling"},  cmdfuncs.fling)
-Lib.Console.newCommand({"fly","flight"},             cmdfuncs.fly)
-Lib.Console.newCommand({"unfly","unflight"},         cmdfuncs.unfly)
+Lib.Console.newCommand({"to","goto"},              cmdfuncs.teleport)
+Lib.Console.newCommand({"fling","predictionfling"}, cmdfuncs.fling)
+Lib.Console.newCommand({"fly","flight"},            cmdfuncs.fly)
+Lib.Console.newCommand({"unfly","unflight"},        cmdfuncs.unfly)
 
 Lib.Console.newCommand({"print"}, function(...)
 	local s = ""
@@ -961,10 +879,10 @@ Lib.Console.newCommand({"clear"}, function()
 end)
 
 Lib.Console.newCommand({"cmds"}, function()
-	Lib.Console.addLog("> to/goto [name]  (reanimate)")
-	Lib.Console.addLog("> fling [name]    (reanimate)")
-	Lib.Console.addLog("> fly [speed]     (reanimate)")
-	Lib.Console.addLog("> unfly           (reanimate)")
+	Lib.Console.addLog("> to/goto [name]")
+	Lib.Console.addLog("> fling [name]")
+	Lib.Console.addLog("> fly [speed]")
+	Lib.Console.addLog("> unfly")
 	Lib.Console.addLog("> print [text]")
 	Lib.Console.addLog("> clear")
 end)
@@ -987,49 +905,57 @@ local mainscript = function()
 	--             JOINT / PART REFERENCES
 	-- ==================================================
 
-	local velYchg         = t.velYchg         or emptyfunction
-	local Yvel            = t.Yvel            or 0
-	local raycastlegs     = t.raycastlegs     or emptyfunction
-	local velbycfrvec     = t.velbycfrvec     or emptyfunction
-	local setCamOffset    = t.setCamOffset    or emptyfunction
-	local getVel          = t.getVel          or emptyfunction
-	local IsWalking       = t.IsWalking       or emptyfunction
-	local setCfr          = t.setCfr          or emptyfunction
-	local refreshjoints   = t.refreshjoints   or emptyfunction
-	local onnewcamera     = t.onnewcamera     or emptyfunction
-	local setHipHeight    = t.setHipHeight    or emptyfunction
-	-- these DO exist in t, keep them as-is:
-	local getPartFromMesh = t.getPartFromMesh
-	local getPartJoint    = t.getPartJoint
-	local setWalkSpeed    = t.setWalkSpeed
-	local R6parts         = t.R6parts
-	local getJoint        = t.getJoint
-	local cframes         = t.cframes
-	local joints          = t.joints
+	-- Safe-guard everything from reanimate() that may be nil
+	local getPartFromMesh    = t.getPartFromMesh
+	local getPartJoint       = t.getPartJoint
+	local getJoint           = t.getJoint
+	local getPart            = t.getPart
 	local getAccWeldFromMesh = t.getAccWeldFromMesh
-	local getPart         = t.getPart
-	local setJumpPower    = t.setJumpPower
-	local setGravity      = t.setGravity
-	-- pull addmode from Lib, not t:
-	local addmode         = Lib.addmode
-	local setJumpPower    = t.setJumpPower
-	local setGravity      = t.setGravity
+	local setWalkSpeed       = t.setWalkSpeed
+	local setJumpPower       = t.setJumpPower
+	local setGravity         = t.setGravity
+	local R6parts            = t.R6parts
+	local cframes_           = t.cframes
+	local joints_            = t.joints
 
-	local RootJoint      = getJoint("RootJoint")
-	local RightShoulder  = getJoint("Right Shoulder")
-	local LeftShoulder   = getJoint("Left Shoulder")
-	local RightHip       = getJoint("Right Hip")
-	local LeftHip        = getJoint("Left Hip")
-	local Neck           = getJoint("Neck")
+	-- These don't exist in reanimate() yet — safe stubs
+	local velYchg      = t.velYchg      or emptyfunction
+	local Yvel         = t.Yvel         or 0
+	local raycastlegs  = t.raycastlegs  or emptyfunction
+	local velbycfrvec  = t.velbycfrvec  or emptyfunction
+	local setCamOffset = t.setCamOffset or emptyfunction
+	local getVel       = t.getVel       or emptyfunction
+	local IsWalking    = t.IsWalking    or emptyfunction
+	local setCfr       = t.setCfr       or emptyfunction
+	local refreshjoints = t.refreshjoints or emptyfunction
+	local setHipHeight = t.setHipHeight or emptyfunction
 
-	local gun                      = getPartFromMesh(6831441507, 6833003967) or nil
-	local AJBackAccessory          = getPartJoint(gun) or nil
-	local Pixie                    = getPartFromMesh(128216670, 150379943) or nil
-	local SpringPixie_150381051_LC = getPartJoint(Pixie) or nil
-	local staff                    = getPartFromMesh(5548423017, 5548423938) or nil
-	local CrystalStaff             = getPartJoint(staff) or nil
-	local rock                     = getPartFromMesh(4307568890, 4307568951) or nil
-	local RockAccessory            = getPartJoint(rock) or nil
+	-- addmode comes from Lib, not reanimate()
+	local addmode = Lib.addmode
+
+	-- ==================================================
+	--             JOINT SHORTHAND REFS
+	-- ==================================================
+
+	local RootJoint     = getJoint("RootJoint")
+	local RightShoulder = getJoint("Right Shoulder")
+	local LeftShoulder  = getJoint("Left Shoulder")
+	local RightHip      = getJoint("Right Hip")
+	local LeftHip       = getJoint("Left Hip")
+	local Neck          = getJoint("Neck")
+
+	-- ==================================================
+	--           ACCESSORY / MESH PART REFS
+	-- ==================================================
+
+	local gun                      = getPartFromMesh(6831441507, 6833003967)
+	local AJBackAccessory          = getPartJoint(gun)
+	local Pixie                    = getPartFromMesh(128216670, 150379943)
+	local SpringPixie_150381051_LC = getPartJoint(Pixie)
+	local staff                    = getPartFromMesh(5548423017, 5548423938)
+	local CrystalStaff             = getPartJoint(staff)
+	local rock                     = getPartFromMesh(4307568890, 4307568951)
+	local RockAccessory            = getPartJoint(rock)
 
 	-- ==================================================
 	--              FLY / TELEPORT STATE
@@ -1044,23 +970,15 @@ local mainscript = function()
 	--               CONSOLE COMMAND IMPL
 	-- ==================================================
 
-	cmdfuncs.teleport = function(who)
-		-- Teleport to player `who` ("me" / "random" / name)
-	end
-	cmdfuncs.fling = function(who)
-		-- Fling player `who`
-	end
-	cmdfuncs.fly = function(speed)
-		-- Begin flying at optional `speed`
-	end
-	cmdfuncs.unfly = function()
-		flyFunc = nil
-	end
+	cmdfuncs.teleport = function(who) end
+	cmdfuncs.fling    = function(who) end
+	cmdfuncs.fly      = function(speed) end
+	cmdfuncs.unfly    = function() flyFunc = nil end
 
-	Lib.Console.newCommand({"to","goto"},               cmdfuncs.teleport)
-	Lib.Console.newCommand({"fling","predictionfling"},  cmdfuncs.fling)
-	Lib.Console.newCommand({"fly","flight"},             cmdfuncs.fly)
-	Lib.Console.newCommand({"unfly","unflight"},         cmdfuncs.unfly)
+	Lib.Console.newCommand({"to","goto"},              cmdfuncs.teleport)
+	Lib.Console.newCommand({"fling","predictionfling"}, cmdfuncs.fling)
+	Lib.Console.newCommand({"fly","flight"},            cmdfuncs.fly)
+	Lib.Console.newCommand({"unfly","unflight"},        cmdfuncs.unfly)
 
 	-- ==================================================
 	--                  RESPAWN HOOK
@@ -1070,31 +988,11 @@ local mainscript = function()
 		currentmode = "q"
 		local SS = game:GetService("SoundService")
 		for _, object in ipairs(SS:GetChildren()) do
-			if object.Name:find("ModeMusic_") then
-				object:Destroy()
-			end
+			if object.Name:find("ModeMusic_") then object:Destroy() end
 		end
 		local PlayerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 		local existingHUD = PlayerGui:FindFirstChild("LightningCannonHud")
-		if existingHUD then
-			existingHUD:Destroy()
-		end
-	end
-
-	-- ==================================================
-	--                LOOP FUNCTION
-	-- ==================================================
-
-	local loopFunc = function()
-		-- per-mode ground effects go here
-	end
-
-	-- ==================================================
-	--                MUSIC HELPER
-	-- ==================================================
-
-	local switchtheme = function(name, vol, pit, time)
-		-- Play loadedassets[name .. ".mp3"] on the music sound
+		if existingHUD then existingHUD:Destroy() end
 	end
 
 	-- ==================================================
@@ -1233,61 +1131,45 @@ local mainscript = function()
 	attackkeys["gun"] = {
 		["z"] = function()
 			if attackAnimation then return end
-			attackAnimation = function()
-				-- lerp joints here
-			end
+			attackAnimation = function() end
 			twait(0.25)
 			attackAnimation = nil
 		end
 	}
 
 	-- ==================================================
-	--               INPUT: MODE SWITCHING
-	-- ==================================================
-
-	-- tinsert(cons, Connect(insGet(uis, "InputBegan"), function(a)
-	--     if insGet(gs, "MenuIsOpen") or GetFocusedTextBox(uis) then return end
-	--     a = slower(insGet(a, "KeyCode").Name)
-	--     if currentmodes[a] then
-	--         -- switch mode
-	--     else
-	--         -- check attackkeys
-	--     end
-	-- end))
-
-	-- ==================================================
 	--                    MUSIC
 	-- ==================================================
-	-- Setup Keybinds
+
 	local UIS = game:GetService("UserInputService")
-	_G.ModeV = "gunless" -- Default
+	_G.ModeV = "gunless"
 
 	local keyBinds = {
-			[Enum.KeyCode.F] = "gun"
+		[Enum.KeyCode.F] = "gun"
 	}
-	_G.HatInputConnection = UIS.InputBegan:Connect(function(input, gpe)
-			if gpe then return end
-			
-			local selectedMode = keyBinds[input.KeyCode]
-			if selectedMode then
-					if _G.ModeV == selectedMode then
-							_G.ModeV = "gunless"
-					else
-							_G.ModeV = selectedMode
-					end
-					
-					print("Switched to: " .. _G.ModeV)
 
-					playModeMusic()
+	_G.HatInputConnection = UIS.InputBegan:Connect(function(input, gpe)
+		if gpe then return end
+		local selectedMode = keyBinds[input.KeyCode]
+		if selectedMode then
+			if _G.ModeV == selectedMode then
+				_G.ModeV = "gunless"
+			else
+				_G.ModeV = selectedMode
 			end
+			print("Switched to: " .. _G.ModeV)
+			playModeMusic()
+		end
 	end)
+
 	local Folder = "ExiresPersonal"
 	if isfolder and not isfolder(Folder) then makefolder(Folder) end
 	local Path = Folder .. "/"
 
+	-- FIX: use raw.githubusercontent.com so we get actual file bytes
 	local SongLinks = {
-		["gunless"] = "https://github.com/bayly098764321/Hat-FE/blob/main/GunAway?raw=true",
-		["gun"]     = "https://github.com/bayly098764321/Hat-FE/blob/main/GunOut?raw=true",
+		["gunless"] = "https://raw.githubusercontent.com/bayly098764321/Hat-FE/main/GunAway",
+		["gun"]     = "https://raw.githubusercontent.com/bayly098764321/Hat-FE/main/GunOut",
 	}
 
 	function getmp3(modeName)
@@ -1299,14 +1181,14 @@ local mainscript = function()
 				local httpRequest = (syn and syn.request) or (http and http.request) or http_request or request
 				if httpRequest then
 					local response = httpRequest({ Url = url, Method = "GET" })
-					if response.Success then
+					if response and response.Success then
 						writefile(fullPath, response.Body)
 					else
-						warn("Download failed for " .. modeName .. " - Status: " .. tostring(response.StatusCode))
+						warn("Download failed for " .. modeName .. " - Status: " .. tostring(response and response.StatusCode))
 						return nil
 					end
 				else
-					warn("Your executor does not support 'request' or 'HttpGet'")
+					warn("Your executor does not support http requests")
 					return nil
 				end
 			else
@@ -1338,7 +1220,7 @@ local mainscript = function()
 
 		if assetId then
 			local sound = Instance.new("Sound")
-			sound.Name    = "ModeMusic_" .. targetMode
+			sound.Name   = "ModeMusic_" .. targetMode
 			sound.SoundId = assetId
 			sound.Volume  = 1
 			sound.Looped  = true
@@ -1365,7 +1247,37 @@ local mainscript = function()
 		end
 	end
 
+	-- ==================================================
+	--              HEARTBEAT ANIMATION LOOP
+	-- ==================================================
+
+	tinsert(cons, Connect(heartbeat, function(dt)
+		-- Guard: if character is gone, stop
+		if not (c and IsDescendantOf(c, ws)) then return end
+
+		deltaTime = dt * 60  -- normalise to 60fps feel
+		sine = sine + dt
+
+		local humanoid = FindFirstChildOfClass(c, "Humanoid")
+		if not humanoid then return end
+
+		local lerpsIdle, lerpsWalk, lerpsJump, lerpsFall = Lib.getLerps()
+
+		local hstate = humanoid:GetState()
+		if hstate == Enum.HumanoidStateType.Jumping then
+			lerpsJump()
+		elseif hstate == Enum.HumanoidStateType.Freefall then
+			lerpsFall()
+		elseif humanoid.MoveDirection.Magnitude > 0.1 then
+			lerpsWalk()
+		else
+			lerpsIdle()
+		end
+	end))
+
+	-- Start music
 	playModeMusic()
+
 end -- end mainscript
 
 -- ==================================================
