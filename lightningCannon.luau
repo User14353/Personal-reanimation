@@ -815,7 +815,46 @@ local InitModule = function()
 		addLog     = function() end,
 		logs       = {},
 	}
+	local mradN05 = -0.008726646259971648
+		local pi2     = math.pi / 2 - 0.0001
+		local npi2    = -pi2
+		local KeyCode  = e.KeyCode
+		local enumYXZ  = e.RotationOrder.YXZ
 
+		local mode        = "default"
+		local defaultmode = {}
+		local modes       = { default = defaultmode }
+
+		local lerpsIdle = emptyfunction
+		local lerpsWalk = emptyfunction
+		local lerpsJump = emptyfunction
+		local lerpsFall = emptyfunction
+
+		local addmode = function(key, modeTable)
+			if (type(key) ~= "string") or (type(modeTable) ~= "table") then
+				return
+			end
+			-- Strip non-function entries
+			for i, v in next, modeTable do
+				if type(v) ~= "function" then
+					modeTable[i] = nil
+				end
+			end
+			if key == "default" then
+				defaultmode      = modeTable
+				modes.default    = modeTable
+				lerpsIdle        = modeTable.idle or emptyfunction
+				lerpsWalk        = modeTable.walk or emptyfunction
+				lerpsJump        = modeTable.jump or emptyfunction
+				lerpsFall        = modeTable.fall or emptyfunction
+				if modeTable.modeEntered then
+					modeTable.modeEntered()
+				end
+			elseif #key == 1 then
+				local enumKey    = KeyCode[supper(ssub(key, 1, 1))]
+				modes[enumKey]   = modeTable
+			end
+		end
 	-- ==================================================
 	--                  RETURN PUBLIC API
 	-- ==================================================
@@ -834,6 +873,8 @@ local InitModule = function()
 		OnReanimate         = OnReanimate,
 		OnRespawn           = OnRespawn,
 		GetReanimateFn      = GetReanimateFn,
+		addmode             = addmode,   -- now accessible in mainscript
+		modes               = modes,
 		FileSystemSupported = function() return FileSystemSupported end,
 	}
 end
